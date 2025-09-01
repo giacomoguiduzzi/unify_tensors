@@ -7,7 +7,7 @@ Useful when a part of a big model has been offloaded and there's a risk of a run
 pip install unify-tensors
 ```
 
-or, if not available on PyPI, clone the repository and install it manually:
+or, if you prefer to go directly through GitHub, clone the repository and install it manually:
 
 ```bash
 git clone https://github.com/giacomoguiduzzi/unify-tensors.git
