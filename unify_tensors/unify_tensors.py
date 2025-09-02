@@ -31,6 +31,8 @@ def unify_tensors(*args: Any, device: Optional[TorchDevice] = None) -> Union[Mov
             original_indices.append(i)
 
     if not objects_to_move:
+        if len(args) == 1:
+            return args[0]
         return args
 
     # If a specific device is not provided, use the device of the first movable object.
@@ -46,7 +48,7 @@ def unify_tensors(*args: Any, device: Optional[TorchDevice] = None) -> Union[Mov
     devices = {
         obj.device for obj in objects_to_move
         if isinstance(obj, torch.Tensor) or (
-                    isinstance(obj, torch.nn.Module) and hasattr(next(obj.parameters(), None), 'device'))
+                isinstance(obj, torch.nn.Module) and hasattr(next(obj.parameters(), None), 'device'))
     }
 
     if len(devices) <= 1 and str(target_device) in [str(d) for d in devices]:
