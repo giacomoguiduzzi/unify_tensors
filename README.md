@@ -20,26 +20,37 @@ The `unify_tensors` function takes any number of tensor arguments and moves them
 If you want to move them to a specific device, you can pass the `device` keyword argument.
 
 ```python
-from unify_tensors import unify_tensors
+from unify_tensors import unify_tensors as unify_tensors
 import torch
+from torch import nn
 
+# Example with Tensors
 a = torch.randn(2, 2)
 b = torch.randn(2, 2).to('cuda')
 c = torch.randn(2, 2).to('cpu')
 
-a, b, c = unify_tensors(a, b, c)
+# Unifying tensors
+a_unified, b_unified, c_unified = unify_tensors(a, b, c)
 
-# Should print 'cpu' because the first tensor is on CPU
-print(a.device, b.device, c.device)
+print(f"Tensors unified to: {a_unified.device}")
 
-a = a.to('cuda')
-a, b, c = unify_tensors(a, b, c)
+# Example with a Tensor and a Model
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.param = nn.Parameter(torch.randn(1))
 
-# Should print 'cuda' because the first tensor is on CUDA
-print(a.device, b.device, c.device)
+    def forward(self, x):
+        return x * self.param
 
-# You can also specify a device explicitly
-a, b, c = unify_tensors(a, b, c, device='cpu')
+model = MyModel().to('cpu')
+input_tensor = torch.randn(1).to('cuda')
+
+# Unifying a tensor and a model
+model_unified, input_unified = unify_tensors(model, input_tensor)
+
+print(f"Model unified to: {next(model_unified.parameters()).device}")
+print(f"Input tensor unified to: {input_unified.device}")
 
 # Should print 'cpu' because we specified the device
 print(a.device, b.device, c.device)
